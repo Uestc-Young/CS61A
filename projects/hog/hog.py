@@ -123,23 +123,37 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    turn = 0
+    player_0_previous_score,player_1_previous_score = 0,0
     while score0 < goal and score1 < goal:
         if who == 0:
             num_rolls = strategy0(score0, score1)
-            score0 += take_turn(num_rolls=num_rolls,opponent_score=score1,dice=dice)
+            current_score = take_turn(num_rolls=num_rolls,opponent_score=score1,dice=dice)
+            score0 += current_score
+            if feral_hogs and abs(player_0_previous_score-num_rolls) == 2:
+                score0 += 3
             if is_swap(score0,score1):
                 score0,score1 = score1,score0
+            player_0_previous_score = current_score
         else:
             num_rolls = strategy1(score1, score0)
-            score1 += take_turn(num_rolls=num_rolls,opponent_score=score0,dice=dice)
+            current_score = take_turn(num_rolls=num_rolls,opponent_score=score0,dice=dice)
+            score1 +=  current_score
+            if feral_hogs and abs(player_1_previous_score-num_rolls) == 2:
+                score1 += 3
             if is_swap(score1,score0):
                 score1,score0 = score0,score1
+            player_1_previous_score = current_score
         who = other(who)
+        # BEGIN PROBLEM 6
+        "*** YOUR CODE HERE ***"
+        # END PROBLEM 6
+        if turn == 0:
+            comment = say(score0,score1)
+        else:
+            comment = comment(score0,score1)
+        turn += 1
     # END PROBLEM 5
-    # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
-    # BEGIN PROBLEM 6
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 6
     return score0, score1
 
 
@@ -225,6 +239,26 @@ def announce_highest(who, last_score=0, running_high=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def say(score0,score1):
+        if who == 1:
+            current_highest = score1 - last_score
+            tmp = running_high
+            if current_highest > tmp:
+                tmp = score1 - last_score
+                print(tmp,"point(s)! That's the biggest gain yet for Player",who)
+                return announce_highest(who,score1,tmp)
+            else:
+                return announce_highest(who,score1,tmp)
+        else:
+            current_highest = score0 - last_score
+            tmp = running_high
+            if current_highest > tmp:
+                tmp = score0 - last_score
+                print(tmp,"point(s)! That's the biggest gain yet for Player",who)
+                return announce_highest(who,score0,tmp)
+            else:
+                return announce_highest(who,score0,tmp)
+    return say
     # END PROBLEM 7
 
 
