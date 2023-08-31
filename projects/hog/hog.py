@@ -24,7 +24,7 @@ def roll_dice(num_rolls, dice=six_sided):
     "*** YOUR CODE HERE ***"
     # Remember to call dice() exactly num_rolls times even if Pig Out happens in the middle of rolling!
     sum_score = 0
-    outcomes = [dice() for time in range(num_rolls)]
+    outcomes = [dice() for _ in range(num_rolls)]
     for outcome in outcomes:
         sum_score += outcome
         if outcome == 1:
@@ -298,6 +298,14 @@ def make_averaged(original_function, trials_count=1000):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    def averaged_function(*args):
+        rolls = [original_function(*args) for _ in range(trials_count)]
+        average_roll = 0
+        for roll in rolls:
+            average_roll += roll
+        average_roll = average_roll / len(rolls)
+        return average_roll
+    return averaged_function
     # END PROBLEM 8
 
 
@@ -312,6 +320,15 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    max_score_num_rolls = 0
+    max_score = 0
+    for i in range(1,11):
+        current_average = make_averaged(roll_dice,trials_count)
+        current_score = current_average(i,dice) 
+        if current_score > max_score:
+            max_score = current_score
+            max_score_num_rolls = i
+    return max_score_num_rolls
     # END PROBLEM 9
 
 
@@ -361,7 +378,10 @@ def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+    if free_bacon(opponent_score) >= cutoff:
+        return 0
+    else:
+        return num_rolls
     # END PROBLEM 10
 
 
@@ -371,7 +391,13 @@ def swap_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     non-beneficial swap. Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    tmp_score = score + free_bacon(opponent_score)
+    if is_swap(tmp_score,opponent_score):
+        if opponent_score > tmp_score:
+            return 0
+        else:
+            return num_rolls
+    return bacon_strategy(score,opponent_score,cutoff,num_rolls)
     # END PROBLEM 11
 
 
