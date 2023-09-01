@@ -15,7 +15,7 @@ def lambda_curry2(func):
     3
     """
     "*** YOUR CODE HERE ***"
-    return ______
+    return lambda x: lambda y: func(x,y)
 
 
 
@@ -47,6 +47,13 @@ def count_cond(condition):
     8
     """
     "*** YOUR CODE HERE ***"
+    def f(x):
+        count = 0
+        for i in range(1,x+1):
+            if condition(x,i) == True:
+                count += 1
+        return count
+    return f
 
 
 
@@ -62,6 +69,12 @@ def both_paths(sofar="S"):
     SUU
     """
     "*** YOUR CODE HERE ***"
+    print(sofar)
+    def up():
+        return both_paths(sofar+"U")
+    def down():
+        return both_paths(sofar+"D")
+    return up,down
 
 
 
@@ -97,6 +110,12 @@ def composite_identity(f, g):
     False
     """
     "*** YOUR CODE HERE ***"
+    def compare(x):
+        if g(f(x)) == f(g(x)):
+            return True
+        else:
+            return False
+    return compare 
 
 
 
@@ -127,4 +146,16 @@ def cycle(f1, f2, f3):
     19
     """
     "*** YOUR CODE HERE ***"
-
+    li = [f1,f2,f3]
+    def func(n):
+        def f(x):
+            for i in range(n):
+                if i % 3 == 0:
+                    x = li[0](x)
+                elif i % 3 == 1:
+                    x = li[1](x)
+                else:
+                    x = li[2](x)
+            return x
+        return f
+    return func
